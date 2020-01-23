@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}announcement.name!{% endblock %}
+
+{% block body %}
+
+{% include 'Web/announcement/_menu.html.twig' %}
+
+<div class="example-wrapper">
+    <h1>{{ announcement.name }}! ✅</h1>
+
+    <div><a href="{{ path('home_page') }}">Atgal</a></div>
+    <div>{{ announcement.description|format_text|raw }}</div>
+    <hr/>
+    <div>Skelbimas parodytas: {{ announcement.showCount }} kartus</div>
+    <div>Skelbimas publikuotas: {{ announcement.publishedAt|date('Y-m-d H:i:s') }}</div>
+
+    <div><a href="{{ path('home_page') }}">Atgal</a></div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% block menu %}
+    <div class="example-wrapper">
+        <ul>
+            <li><a href="{{ path('home_page') }}">Web</a></li>
+            <li><a href="{{ path('announcement_index') }}">Back to list</a></li>
+            {% if app.user %}
+            <li>
+                You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}

@@ -40,7 +40,12 @@ class Announcement
     /**
      * @ORM\Column(type="decimal", precision=10, scale=0)
      */
-    private $showCount;
+    private $show_count;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_active;
 
     public function getId(): ?int
     {
@@ -97,18 +102,31 @@ class Announcement
 
     public function getShowCount(): ?string
     {
-        return $this->showCount;
+        return $this->show_count;
     }
 
-    public function setShowCount(string $showCount): self
+    public function setShowCount(string $show_count): self
     {
-        $this->showCount = $showCount;
+        $this->show_count = $show_count;
 
         return $this;
     }
 
     public function __construct()
     {
-        $this->showCount = 0;
+        $this->show_count = 0;
+        $this->is_active = true;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->is_active;
+    }
+
+    public function setIsActive(bool $is_active): self
+    {
+        $this->is_active = $is_active;
+
+        return $this;
     }
 }

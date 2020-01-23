@@ -1,0 +1,15 @@
+{% block menu %}
+    <div class="example-wrapper">
+        <ul>
+            <li><a href="{{ path('home_page') }}">Pradžia</a></li>
+            <li><a href="{{ path('all_tops') }}">Top lankomiausiu</a></li>
+            <li><a href="{{ path('announcement_index') }}">Administravimas</a></li>
+        </ul>
+
+        {% if app.user %}
+            <div class="mb-3">
+                Jus prisijungęs vartotoju {{ app.user.username }}, <a href="{{ path('app_logout') }}">Atsijungti</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Skelbimai!{% endblock %}
+
+{% block body %}
+
+    {% include 'Web/announcement/_menu.html.twig' %}
+
+<div class="example-wrapper">
+    <h1>Skelbimai! ✅</h1>
+
+    {% for announc in announcements  %}
+        <div>
+            <stron><a href="{{ path('announcement', {'id': announc.id}) }}">{{ announc.name }} - {{ announc.publishedAt|date('Y-m-d H:i:s') }}</a></stron>
+            <div>
+                {{ announc.description|truncate(50, true, '...') }}
+            </div>
+            <div>&nbsp;</div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
