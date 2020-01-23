@@ -6,6 +6,7 @@ use App\Entity\Announcement;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
@@ -41,10 +42,13 @@ class AppFixtures extends Fixture
  condimentum maximus elit ex cursus libero dignissim suscipit quam neque mollis est 
  Praesent dictum erat libero vitae commodo augue ornare ac';
 
-    public function __construct()
-    {
-        $this->vocabulary = explode(' ', $this->exampleText);
 
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+        $this->vocabulary = explode(' ', $this->exampleText);
     }
 
     public function load(ObjectManager $manager)
@@ -53,16 +57,18 @@ class AppFixtures extends Fixture
         $adminUser = new User();
         $adminUser
             ->setEmail('admin@admin.lt')
-            ->setPassword('admin')
             ->setRoles(['ROLE_ADMIN']);
+        $adminUser->setPassword($this->passwordEncoder->encodePassword($adminUser, 'admin'));
+
         $manager->persist($adminUser);
 
         // Generate simple user
         $simpleUser = new User();
         $simpleUser
             ->setEmail('user@user.lt')
-            ->setPassword('user')
             ->setRoles(['ROLE_USER']);
+        $simpleUser->setPassword($this->passwordEncoder->encodePassword($simpleUser, 'user'));
+
         $manager->persist($simpleUser);
 
         // Generate announcements
@@ -75,6 +81,10 @@ class AppFixtures extends Fixture
            ;
             if (rand(0, self::CLOSED_ANNOUNCEMENTS_ONE_OF) == 0) {
                 $announcement->setClosedAt(new \DateTime());
+            }
+
+            if (rand(0, self::CLOSED_ANNOUNCEMENTS_ONE_OF) == 0) {
+                $announcement->setIsActive(false);
             }
 
             $manager->persist($announcement);

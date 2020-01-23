@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Announcement index{% endblock %}
+
+{% block body %}
+    {{ include('Admin/announcement/_menu.html.twig') }}
+
+    <h1>Announcement index</h1>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('announcement_new') }}">Create new</a>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Published_at</th>
+                <th>Closed_at</th>
+                <th>ShowCount</th>
+                <th>IsActive</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for announcement in announcements %}
+            <tr>
+                <td>{{ announcement.id }}</td>
+                <td>{{ announcement.name }}</td>
+                <td>{{ announcement.description }}</td>
+                <td>{{ announcement.publishedAt ? announcement.publishedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ announcement.closedAt ? announcement.closedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ announcement.showCount }}</td>
+                <td>{{ announcement.isActive ? 'yes' : 'no' }}</td>
+                <td>
+                    <a href="{{ path('announcement_show', {'id': announcement.id}) }}">show</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('announcement_edit', {'id': announcement.id}) }}">edit</a>
+                    {% endif %}
+                    {% include 'Admin/announcement/_toggle_form.html.twig' %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('announcement_new') }}">Create new</a>
+    {% endif %}
+{% endblock %}

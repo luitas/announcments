@@ -1,0 +1,11 @@
+<form method="post" action="{{ path('announcement_toggle', {'id': announcement.id}) }}" onsubmit="return confirm('Are you sure you want to toggle this item?');">
+    <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ announcement.id) }}">
+    <button class="btn">
+        {% if announcement.isActive %}
+            Off
+        {% else %}
+            On
+        {% endif %}
+    </button>
+</form>
