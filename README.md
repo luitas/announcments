@@ -1,0 +1,2 @@
+# announcments
+Simple announcments site
