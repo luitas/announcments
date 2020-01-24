@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Announcement as Announcement;
+use App\Entity\Announcement;
+use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -11,13 +14,29 @@ class AnnouncementController extends AbstractController
 {
     /**
      * @Route("/", name="home_page")
+     * @param EntityManagerInterface $em
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
      */
-    public function index()
+    public function index(EntityManagerInterface $em, PaginatorInterface $paginator, Request $request)
     {
-        $repository = $this->getDoctrine()->getManager()->getRepository(Announcement::class);
-        $announcements = $repository->findAll();
+        $query = $em->createQuery("SELECT a FROM App\Entity\Announcement a 
+                    WHERE 
+                        :today BETWEEN COALESCE(a.published_at, :today) AND COALESCE(a.closed_at, :today)
+                        AND a.is_active = 1
+                     ")
+        ->setParameter('today', new \DateTime());
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('Web/announcement/index.html.twig', [
-            'announcements' => $announcements,
+            'pagination' => $pagination,
             'controller_name' => 'AnnouncementController',
         ]);
     }
@@ -25,10 +44,10 @@ class AnnouncementController extends AbstractController
     /**
      * @Route("/announcement/{id}", name="announcement")
      * @param $id
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function show($id){
-        $em = $this->getDoctrine()->getManager();
+    public function show($id, EntityManagerInterface $em){
         $repository = $em->getRepository(Announcement::class);
 
         /**
