@@ -20,7 +20,6 @@
                 <th>Description</th>
                 <th>Published_at</th>
                 <th>Closed_at</th>
-                <th>ShowCount</th>
                 <th>IsActive</th>
                 <th>actions</th>
             </tr>
@@ -33,7 +32,6 @@
                 <td>{{ announcement.description }}</td>
                 <td>{{ announcement.publishedAt ? announcement.publishedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ announcement.closedAt ? announcement.closedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ announcement.showCount }}</td>
                 <td>{{ announcement.isActive ? 'yes' : 'no' }}</td>
                 <td>
                     <a href="{{ path('announcement_show', {'id': announcement.id}) }}">show</a>

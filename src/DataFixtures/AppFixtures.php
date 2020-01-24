@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Announcement;
+use App\Entity\AnnouncementClick;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -22,6 +23,12 @@ class AppFixtures extends Fixture
     const CLOSED_ANNOUNCEMENTS_ONE_OF = 11;
     const COMMA_AFTER_WORD_ON_OF = 9;
     const DOT_AFTER_WORD_ON_OF = 15;
+
+    /**
+     * Values for generating random clicks
+     */
+    const CLICKS_TO_GENERATE = 300;
+    const CLICKS_PERIOD = "-1 month";
 
     /**
      * @var array
@@ -70,6 +77,7 @@ class AppFixtures extends Fixture
         $simpleUser->setPassword($this->passwordEncoder->encodePassword($simpleUser, 'user'));
 
         $manager->persist($simpleUser);
+        $announcements = [];
 
         // Generate announcements
         for ($i = 0; $i < self::ANNOUNCEMENT_GENERATED; $i++) {
@@ -88,7 +96,20 @@ class AppFixtures extends Fixture
             }
 
             $manager->persist($announcement);
+            $announcements[] = $announcement;
+        }
 
+        // Generate clicks
+        $maxTimeInterval = strtotime("now") - strtotime(self::CLICKS_PERIOD);
+        for ($i = 0; $i < self::CLICKS_TO_GENERATE; $i++ ) {
+            $announcement = $announcements[rand(0, self::ANNOUNCEMENT_GENERATED-1)];
+            $announcementClick = new AnnouncementClick();
+            $announcementClick->setAnnouncement($announcement);
+            $date = new \DateTime();
+            $date->setTimestamp(strtotime("now") - rand(0, $maxTimeInterval));
+            $announcementClick->setClickedAt($date);
+
+            $manager->persist($announcementClick);
         }
 
         $manager->flush();
