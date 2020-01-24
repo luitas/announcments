@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnnouncementRepository")
- * @ORM\Table(name="announcments")
+ * @ORM\Table(name="announcements")
  */
 class Announcement
 {
@@ -38,14 +40,14 @@ class Announcement
     private $closed_at;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=0)
-     */
-    private $show_count;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $is_active;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AnnouncementClick", mappedBy="announcement", cascade={"remove"})
+     */
+    private $announcementClicks;
 
     public function getId(): ?int
     {
@@ -100,22 +102,11 @@ class Announcement
         return $this;
     }
 
-    public function getShowCount(): ?string
-    {
-        return $this->show_count;
-    }
-
-    public function setShowCount(string $show_count): self
-    {
-        $this->show_count = $show_count;
-
-        return $this;
-    }
-
     public function __construct()
     {
         $this->show_count = 0;
         $this->is_active = true;
+        $this->announcementClicks = new ArrayCollection();
     }
 
     public function getIsActive(): ?bool
@@ -126,6 +117,37 @@ class Announcement
     public function setIsActive(bool $is_active): self
     {
         $this->is_active = $is_active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AnnouncementClick[]
+     */
+    public function getAnnouncementClicks(): Collection
+    {
+        return $this->announcementClicks;
+    }
+
+    public function addAnnouncementClick(AnnouncementClick $announcementClick): self
+    {
+        if (!$this->announcementClicks->contains($announcementClick)) {
+            $this->announcementClicks[] = $announcementClick;
+            $announcementClick->setAnnouncement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnouncementClick(AnnouncementClick $announcementClick): self
+    {
+        if ($this->announcementClicks->contains($announcementClick)) {
+            $this->announcementClicks->removeElement($announcementClick);
+            // set the owning side to null (unless already changed)
+            if ($announcementClick->getAnnouncement() === $this) {
+                $announcementClick->setAnnouncement(null);
+            }
+        }
 
         return $this;
     }

@@ -2,7 +2,14 @@
     <div class="example-wrapper">
         <ul>
             <li><a href="{{ path('home_page') }}">Pradžia</a></li>
-            <li><a href="{{ path('all_tops') }}">Top lankomiausiu</a></li>
+            <li>
+                Top lankomiausiu
+                <form action="{{ path('all_tops') }}" method="get">
+                    <input type="text" name="top_date_start" value="{% if top_date_start is defined %}{{ top_date_start }}{% else %}{{ "-1 month"|date('Y-m-d') }}{% endif %}">
+                    <input type="text" name="top_date_end" value="{% if top_date_end is defined %}{{ top_date_end }}{% else %}{{ "+1 day"|date('Y-m-d') }}{% endif %}">
+                    <input type="submit" value="Skaičiuoti">
+                </form>
+            </li>
             <li><a href="{{ path('announcement_index') }}">Administravimas</a></li>
         </ul>
 

@@ -17,7 +17,6 @@ class AnnouncementType extends AbstractType
             ->add('published_at')
             ->add('closed_at')
             ->add('is_active')
-            ->add('show_count')
         ;
     }
 
